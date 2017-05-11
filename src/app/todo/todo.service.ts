@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import 'rxjs/add/operator/map';
 
 let todos = [
   { _id: 1, title: 'Install Angular CLI', isDone: true },
@@ -10,7 +12,7 @@ let todos = [
 @Injectable()
 export class TodoService {
 
-  constructor() { }
+  constructor(private http: Http) { }
  
   get(query = ''){
     return new Promise(resolve => {
@@ -54,6 +56,39 @@ deleteCompleted() {
     resolve(todos);
   });
 }
-  
+
+getAllTasks()
+{
+	  return this.http.get('/api/getTasks')
+      .map(res => res.json());
+}
+
+addTask(task)
+{
+//console.log("Hell");
+  return this.http
+    .post('/api/tasks', task)
+      .subscribe(data => {
+            alert('ok');
+      }, error => {
+          console.log(error.json());
+      });
+}
+
+deleteTask(key)
+{
+//console.log(key);
+  return this.http
+    .post('/api/deleteTask',key)
+      .subscribe(data => {
+            //alert('ok');
+
+			console.log("Deletion Successful")
+      }, error => {
+          console.log(error.json());
+      });
+}
+
+
 
 }

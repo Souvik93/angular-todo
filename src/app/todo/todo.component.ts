@@ -12,9 +12,12 @@ export class TodoComponent implements OnInit {
 
   private todos;
   private activeTasks;
-  private newTodo;
-   private path;
-
+  public newTodo;
+  private path;
+  posts: any = [];
+  private result;
+  private nTask;
+  private key;
 
  constructor(private todoService: TodoService, private route: ActivatedRoute) { }
   getTodos(query = ''){
@@ -25,6 +28,7 @@ export class TodoComponent implements OnInit {
   }
   
   addTodo(){
+  //console.log(this.newTodo);
   this.todoService.add({ title: this.newTodo, isDone: false }).then(() => {
     return this.getTodos();
   }).then(() => {
@@ -49,11 +53,46 @@ destroyTodo(todo){
     return this.getTodos();
   });
 }
+
+getToDoTasks()
+{
+	//var tasks=[];
+	 this.todoService.getAllTasks().subscribe(posts => {
+      this.posts = posts;
+    });
+	
+}
+addToDoTask()
+{
+	
+	//console.log(this.nTask);
+	this.todoService.addTask({ text: this.nTask, isDone: true, key:Date.now() })
+    //newToDo="";
+	this.nTask="";
+	this.getToDoTasks();
+	
+}
+
+deleteToDoTask(todo)
+{
+	
+	
+	this.todoService.deleteTask({key:todo.key})
+    //newToDo="";
+	this.getToDoTasks();
+	
+}
+
+
   ngOnInit() {
  this.route.params.subscribe(params => {
       this.path = params['status'];
       this.getTodos(this.path);
+	 
     });
+	this.getToDoTasks();
+	//console.log(this.newToDo);
+	
   }
 
 }
