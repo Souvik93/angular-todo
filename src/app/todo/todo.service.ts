@@ -68,12 +68,27 @@ addTask(task)
 //console.log("Hell");
   return this.http
     .post('/api/tasks', task)
-      .subscribe(data => {
-            alert('ok');
+      .map(data => {
+            var result=data;
+            console.log(result);
       }, error => {
           console.log(error.json());
       });
 }
+
+updateCompleteTask(task)
+{
+//console.log("Hell");
+  return this.http
+    .post('/api/completeTask', task)
+      .map
+      (data => {
+            
+      }, error => {
+          console.log(error.json());
+      });
+}
+
 
 deleteTask(key)
 {
@@ -89,6 +104,41 @@ deleteTask(key)
       });
 }
 
+completeAllTasks()
+{
+  var key={}
+   return this.http
+    .post('/api/deleteCompletedTasks',key)
+      .map(data => {
+            //alert('ok');
 
+			console.log("Deletion Successful")
+      }, error => {
+          console.log(error.json());
+      });
+}
 
+marlAllTasksCompleted()
+{
+  var key={}
+   return this.http
+    .post('/api/completeAllTasks',key)
+      .map(data => {
+            //alert('ok');
+
+			console.log("Successful")
+      }, error => {
+          console.log(error.json());
+      });
+}
+updateToDoTaskService(todo)
+{
+  var result;
+  return this.http.put('/api/updateToDoTask',todo).map(data=>{
+    result=data;
+    console.log(result);
+  }, error =>{
+    console.log(error);
+  })
+}
 }

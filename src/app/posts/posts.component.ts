@@ -3,7 +3,13 @@ import { PostsService } from './posts.service';
 @Component({
   selector: 'app-posts',
   templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.scss']
+  //styleUrls: ['./posts.component.scss'],
+  styles:[
+    `
+    .footer{
+      padding:21px 26px;
+      } `
+  ]
 })
 export class PostsComponent implements OnInit {
 

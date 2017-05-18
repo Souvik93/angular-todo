@@ -14,7 +14,7 @@ var localDB='mongodb://localhost:27017/exampleDb';
 var cloudDB='mongodb://souvik:password@ds117271.mlab.com:17271/souvik';
 
 
-MongoClient.connect(localDB, (err, database) => {
+MongoClient.connect(cloudDB, (err, database) => {
 if (err) return console.log(err)
 db = database
 console.log("Database Connection Successful");
@@ -43,14 +43,12 @@ router.get('/posts', (req, res) => {
 router.get('/getTasks', (req, res) => {
 db.collection('todos').find().toArray((err, result) => {
 if (err) return console.log(err)
-//console.log(result);
 res.send(result)
 })
 })
 
 router.post('/tasks', (req, res) => {
 var d = new Date();
-	console.log(req.body.deadline)
 var month=parseInt(d.getMonth())+1;
 req.body.sdate=d.getFullYear()+"-"+month+"-"+d.getDate();
 db.collection('todos').save(req.body, (err, result) => {
@@ -61,12 +59,18 @@ res.send(result)
 })
 
 router.post('/deleteTask', (req, res) => {
-	//console.log(req.body);
 db.collection('todos').findOneAndDelete({key: req.body.key},
 (err, result) => {
 if (err) return res.send(500, err)
 res.send(result)
 })
+})
+
+router.post('/completeAllTasks',(req,res)=>{
+	db.collection('todos').update({isDone:false},{$set:{isDone:true}},{w:1, multi: true},(err,result)=>{
+		if(err) returnres.send(500,err);
+		res.send(result);
+	});
 })
 
 
@@ -78,9 +82,32 @@ if (err) return res.send(500, err)
 res.send(result)
 })
 })
-//deleteCompletedTasks
 
+router.post('/completeTask', (req, res) => {
+	//console.log(req.body);
+	var ctodo;
+	db.collection('todos').findOne({key: req.body.key},
+ (err, result) => {
+    if (err) return res.send(500, err)
+	
+	ctodo=result;
+	ctodo.isDone=true;
+		
+		db.collection('todos').save(ctodo, (err, result) => {
+if (err) return console.log(err)
+console.log('updated to database')
+res.send(result)
+})
+})	
+})
 
-
+router.put('/updateToDoTask',(req,res)=>
+{
+	db.collection('todos').findOneAndUpdate({key:req.body.key},{$set:{text:req.body.text}},(err,result)=>
+	{
+		if(err) return resizeBy.send(500,err);
+		res.send(result);
+	})
+})
 
 module.exports = router;
